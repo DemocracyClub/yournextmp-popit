@@ -136,7 +136,7 @@ So this is hopefully enough for basic entry of candidate data.
 * Reduce the number of requests made to PopIt once
   https://github.com/mysociety/popit/issues/634 is done.
 
-## Getting a development version running:
+## Getting a development version running (Vagrant):
 
 (These are very rough instructions, written for a colleague who
 who's using Vagrant v1 for local development.)
@@ -232,3 +232,14 @@ the development server again are:
 
     cd yournextmp-popit
     ./manage.py runserver 0.0.0.0:8000
+
+## Getting a development version running (OS X):
+
+* Make and activate a virtualenv then `pip install -r requirements.txt`.
+* `brew install yuicompressor`
+* `ln -s /usr/local/bin/yuicompressor /usr/local/bin/yui-compressor` (this is because some platforms put the binary in different places)
+* `bundle install --path vendor/bundle`
+* `python manage.py syncdb`
+* `python manage.py createsuperuser`
+* `python manage.py runserver`
+

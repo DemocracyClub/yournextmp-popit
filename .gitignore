@@ -5,3 +5,5 @@
 .sass-cache
 /htmlcov
 /.coverage
+vendor
+.bundle
