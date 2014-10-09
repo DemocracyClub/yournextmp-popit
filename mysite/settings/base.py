@@ -13,7 +13,7 @@ from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 import os
 import sys
 import yaml
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname('..'))
 
 configuration_file = os.path.join(
     BASE_DIR, 'conf', 'general.yml'
@@ -22,13 +22,18 @@ with open(configuration_file) as f:
     conf = yaml.load(f)
 
 # Load the credentials for the PopIt instance
-
 POPIT_INSTANCE = conf['POPIT_INSTANCE']
 POPIT_HOSTNAME = conf['POPIT_HOSTNAME']
 POPIT_PORT = conf.get('POPIT_PORT', 80)
 POPIT_USER = conf.get('POPIT_USER', '')
-POPIT_PASSWORD = conf.get('POPIT_PASSWORD', '')
-POPIT_API_KEY = conf.get('POPIT_API_KEY', '')
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -98,39 +103,24 @@ AUTHENTICATION_BACKENDS = (
 SOCIALACCOUNT_PROVIDERS = {
     'google': {'SCOPE': ['https://www.googleapis.com/auth/userinfo.profile'],
                'AUTH_PARAMS': {'access_type': 'online'}},
+    'facebook': {'SCOPE': ['email',]},
 }
 
+ACCOUNT_USERNAME_REQUIRED = False
 LOGIN_REDIRECT_URL = '/'
-
-SOCIALACCOUNT_AUTO_SIGNUP = False
-
+SOCIALACCOUNT_AUTO_SIGNUP = True
 ROOT_URLCONF = 'mysite.urls'
-
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
-DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
 LANGUAGE_CODE = 'en-gb'
-
 TIME_ZONE = 'Europe/London'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
@@ -199,3 +189,17 @@ PIPELINE_YUI_BINARY = '/usr/bin/env yui-compressor'
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 NOSE_ARGS = ['--with-doctest', '--with-coverage', '--cover-package=candidates']
+
+# .local.py overrides all the common settings.
+try:
+    from .local import *
+except ImportError:
+    pass
+
+
+# importing test settings file if necessary (TODO chould be done better)
+if len(sys.argv) > 1 and 'test' or 'harvest' in sys.argv[1]:
+    try:
+        from .testing import *
+    except ImportError:
+        pass

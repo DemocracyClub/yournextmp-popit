@@ -7,3 +7,4 @@
 /.coverage
 vendor
 .bundle
+mysite/settings/local.py
