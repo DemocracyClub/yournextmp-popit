@@ -13,7 +13,8 @@ from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 import os
 import sys
 import yaml
-BASE_DIR = os.path.dirname(os.path.dirname('..'))
+from os.path import dirname, join, abspath
+BASE_DIR = abspath(join(dirname(__file__), '..', '..'))
 
 configuration_file = os.path.join(
     BASE_DIR, 'conf', 'general.yml'
